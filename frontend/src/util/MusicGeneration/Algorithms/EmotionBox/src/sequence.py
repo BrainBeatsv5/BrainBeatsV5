@@ -142,7 +142,7 @@ class EventSeq:
     time_shift_bins = DEFAULT_TIME_SHIFT_BINS
 
     @staticmethod
-    def from_note_seq(note_seq): #从note sequence -> performance
+    def from_note_seq(note_seq): #note sequence -> performance
         note_events = []
 
         if USE_VELOCITY:
@@ -155,7 +155,7 @@ class EventSeq:
                     velocity = max(velocity, EventSeq.velocity_range.start)
                     velocity = min(velocity, EventSeq.velocity_range.stop - 1)
                     velocity_index = np.searchsorted(velocity_bins, velocity)  # velocity-> velocity index
-                    note_events.append(Event('velocity', note.start, velocity_index)) # 记录时间和velocity index
+                    note_events.append(Event('velocity', note.start, velocity_index)) # Record time and velocity index
 
                 pitch_index = note.pitch - EventSeq.pitch_range.start  # index=pitch-pitch_min_range
                 note_events.append(Event('note_on', note.start, pitch_index))
@@ -175,7 +175,7 @@ class EventSeq:
 
             while interval - shift >= EventSeq.time_shift_bins[0]:
                 index = np.searchsorted(EventSeq.time_shift_bins,
-                                        interval - shift, side='right') - 1  # time shift-> time shift index 时间精度不够就使用多个timeshift events
+                                        interval - shift, side='right') - 1  # time shift-> time shift index - If the time accuracy is not enough, use multiple timeshifts events
                 events.append(Event('time_shift', event.time + shift, index))
                 shift += EventSeq.time_shift_bins[index]
 
@@ -327,7 +327,7 @@ class ControlSeq:
 
         for i, event in enumerate(events):
 
-            while start < i:  #扣除窗左边的音符
+            while start < i:  #Deduct the note on the left side of the window
                 if events[start].type == 'note_on':
                     abs_pitch = events[start].value + EventSeq.pitch_range.start
                     rel_pitch = _rel_pitch(abs_pitch)
@@ -335,8 +335,8 @@ class ControlSeq:
                     note_count -= 1.
                 start += 1
 
-            while end < len(events): #添加窗左边的音符
-                if events[end].time - event.time > ControlSeq.window_size: #在window_size的时间窗内
+            while end < len(events): #Add notes to the left of the window
+                if events[end].time - event.time > ControlSeq.window_size: #Within the time window of window_size
                     break
                 if events[end].type == 'note_on':
                     abs_pitch = events[end].value + EventSeq.pitch_range.start
@@ -344,7 +344,7 @@ class ControlSeq:
                     pitch_count[rel_pitch] += 1.
                     note_count += 1.
                 end += 1
-            # pitch_count -> pitch_histogram #计算每个event 之后两秒内音符的分布
+            # pitch_count -> pitch_histogram #Calculate the distribution of notes within two seconds after each event
             pitch_histogram = (
                 pitch_count / note_count
                 if note_count
@@ -385,7 +385,7 @@ class ControlSeq:
         feat_dims = ControlSeq.feat_dims()
         assert array.shape[1] == 1 + feat_dims['pitch_histogram']
         ndens = np.zeros([array.shape[0], feat_dims['note_density']])
-        ndens[np.arange(array.shape[0]), array[:, 0]] = 1.  # [steps, dens_dim] 把 dens由 int 变成1-hot（12维)
+        ndens[np.arange(array.shape[0]), array[:, 0]] = 1.  # [steps, dens_dim] Change dens from int to 1-hot (12 dimensions)
         phist = array[:, 1:].astype(np.float64) / 255  # [steps, hist_dim]
         return np.concatenate([ndens, phist], 1)  # [steps, dens_dim(12) + hist_dim(12)]
 

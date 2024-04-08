@@ -12,7 +12,7 @@ import config
 
 def preprocess_midi(path): #midi file->pretty midi(note_seq)->event_seq->control_seq
     note_seq = NoteSeq.from_midi_file(path)
-    note_seq.adjust_time(-note_seq.notes[0].start) #把起始时间设置到0
+    note_seq.adjust_time(-note_seq.notes[0].start) #Set the start time to 0
     event_seq = EventSeq.from_note_seq(note_seq)
     control_seq = ControlSeq.from_event_seq(event_seq)
     even_array=event_seq.to_array()
@@ -41,7 +41,7 @@ def preprocess_midi_files_under(midi_root, save_dir, num_workers):
         name = os.path.basename(path)
         code = hashlib.md5(path.encode()).hexdigest()  # convert path to hashcode
         save_path = os.path.join(save_dir, out_fmt.format(name, code))
-        future_res=future.result() #event_seq.to_array(), control_seq.to_compressed_array() 组成的元组
+        future_res=future.result() #event_seq.to_array(), control_seq.to_compressed_array() tuple
         torch.save(future_res, save_path)
 
     print('Done')

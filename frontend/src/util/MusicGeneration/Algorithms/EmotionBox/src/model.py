@@ -134,7 +134,7 @@ class PerformanceRNN(nn.Module):
             output, hidden = self.forward(event, control, hidden) # generate output for sampling and hiddenlayer for next iter
 
             use_greedy = np.random.random() < greedy
-            event = self._sample_event(output, greedy=use_greedy,temperature=temperature)  #用greedy直接就选择概率最大的 1*batch_size
+            event = self._sample_event(output, greedy=use_greedy,temperature=temperature)  # greedy
 
             if output_type == 'index':
                 outputs.append(event)
