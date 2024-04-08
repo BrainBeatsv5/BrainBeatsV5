@@ -5,6 +5,7 @@
     "fs": "^0.0.1-security",
     "libsvm-js": "^0.2.1",
     "mathjs": "^12.4.1",
+    "midiconvert": "^0.4.7",
     "tonejs-instrument-flute-mp3": "^1.1.2"
   }
 }

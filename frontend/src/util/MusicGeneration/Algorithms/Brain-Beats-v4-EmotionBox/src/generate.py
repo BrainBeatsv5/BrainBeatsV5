@@ -33,7 +33,7 @@ def getopt():
     parser.add_option('-b', '--batch-size',
                       dest='batch_size',
                       type='int',
-                      default=8)
+                      default=1)
 
     parser.add_option('-s', '--session',
                       dest='sess_path',
@@ -49,7 +49,7 @@ def getopt():
     parser.add_option('-l', '--max-length',
                       dest='max_len',
                       type='int',
-                      default=500)
+                      default=5000)
 
     parser.add_option('-g', '--greedy-ratio',
                       dest='greedy_ratio',
